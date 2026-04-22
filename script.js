@@ -123,7 +123,9 @@ function initUI() {
     initInputBayar(); 
     initBesaranUM();
     // ---------------------------
-
+$('#selectBulanGlobal').on('change', function() {
+    renderChartBulanKeseluruhan();
+});
     $('#filterBulanUM').on('change', function() {
         loadDataServer(false);
     });
@@ -231,7 +233,9 @@ async function loadDataServer(isSilent = false) {
       if (typeof renderRekapanUangMakan === 'function') {
         renderRekapanUangMakan();
       }
-      
+      if (typeof renderChartBulanKeseluruhan === 'function') {
+    renderChartBulanKeseluruhan(); 
+}
       // Render Tabel Besaran Uang Makan (Tab Konfigurasi Besaran)
       // Ini memastikan angka "Rp" di tabel rincian langsung terupdate setelah simpan/pindah bulan
       if (typeof renderTabelBesaranUM === 'function') {

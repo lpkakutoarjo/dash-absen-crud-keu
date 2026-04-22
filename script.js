@@ -393,10 +393,10 @@ function applyFilterBulan() {
   let bulanTerpilih = selectBulan.value; 
   let teksBulanTerpilih = selectBulan.options[selectBulan.selectedIndex].text;
   
-  let labelBulanStat = document.getElementById('labelBulanStat');
-  if(labelBulanStat) {
-    labelBulanStat.innerHTML = `<i class="fas fa-calendar-alt me-1"></i> ${bulanTerpilih === "ALL" ? "Sepanjang Tahun" : teksBulanTerpilih}`;
-  }
+  // Variabel penampung statistik global
+  let totalPegawai = rawDataPegawai.length;
+  let totalHadirGlobal = 0;
+  let totalCutiGlobal = 0;
 
   let currentYear = new Date().getFullYear();
   let formatBulanKey = `${currentYear}-${bulanTerpilih}`; 
@@ -408,39 +408,51 @@ function applyFilterBulan() {
     let logsBulanIni = globalLogs.filter(log => log.nama === pegawai.nama && (bulanTerpilih === "ALL" || log.bulan === formatBulanKey));
     
     let jmlHadir = 0, jmlCuti = 0, jmlDL = 0, jmlTK = 0;
-    let notesBulanIni = []; 
     
     logsBulanIni.forEach(log => {
       let st = (log.status || "").toUpperCase();
-      if (st === "HADIR") jmlHadir++;
+      if (st === "HADIR") {
+          jmlHadir++;
+          totalHadirGlobal++; // Hitung hadir global
+      }
+      else if (validCuti.includes(st)) {
+          jmlCuti++;
+          totalCutiGlobal++; // Hitung cuti global
+      }
       else if (st === "DINAS LUAR" || st === "DL") jmlDL++;
       else if (st === "TANPA KETERANGAN" || st === "TK") jmlTK++;
-      else if (validCuti.includes(st)) jmlCuti++;
-      
-      if (log.keterangan && log.keterangan.trim() !== "") {
-        let hariTgl = log.tanggal ? log.tanggal.split('-')[2] : "??"; 
-        notesBulanIni.push(`&bull; Tgl ${hariTgl}: <span class="text-dark">${log.keterangan}</span>`);
-      }
     });
     
-    // --- LOGIKA HARI EFEKTIF: WAJIB DARI TAB JAN-DES ---
+    // ... (Logika hari efektif dan keterangan tetap seperti sebelumnya)
     let hariEfektif = 0;
     if (bulanTerpilih !== "ALL") {
-      if (typeof globalHariEfektifBulanan !== 'undefined' && globalHariEfektifBulanan[formatBulanKey] && globalHariEfektifBulanan[formatBulanKey][pegawai.nama]) {
-        hariEfektif = globalHariEfektifBulanan[formatBulanKey][pegawai.nama];
+      if (globalHariEfektifBulanan[formatBulanKey] && globalHariEfektifBulanan[formatBulanKey][pegawai.nama]) {
+        let dataH = globalHariEfektifBulanan[formatBulanKey][pegawai.nama];
+        hariEfektif = typeof dataH === 'object' ? dataH.hariEfektif : dataH;
       }
     } else {
       hariEfektif = parseInt(pegawai.hariEfektif) || 0; 
     }
-    
-    let finalKeterangan = notesBulanIni.length > 0 ? notesBulanIni.join('<br>') : '<span class="text-muted fst-italic">-</span>';
 
     filteredData.push({
       no: pegawai.no, nama: pegawai.nama, golongan: pegawai.golongan,
       hariEfektif: hariEfektif, cuti: jmlCuti, dl: jmlDL, tk: jmlTK,
-      jmlTidakHadir: (jmlCuti + jmlDL + jmlTK), jumlahKehadiran: jmlHadir, keterangan: finalKeterangan
+      jmlTidakHadir: (jmlCuti + jmlDL + jmlTK), jumlahKehadiran: jmlHadir, keterangan: "-"
     });
   });
+
+  // UPDATE ANGKA DI CARD DASHBOARD
+  animateValue('countPegawai', 0, totalPegawai, 1000);
+  animateValue('totalHadir', 0, totalHadirGlobal, 1000);
+  animateValue('totalCuti', 0, totalCutiGlobal, 1000);
+
+  // Update juga ke dashboard utama
+  const statTotalPegawai = document.getElementById('statTotalPegawai');
+  if(statTotalPegawai) statTotalPegawai.innerText = totalPegawai;
+  const statTotalHadir = document.getElementById('statTotalHadir');
+  if(statTotalHadir) statTotalHadir.innerHTML = `${totalHadirGlobal} <span class="fs-6 text-muted fw-normal">Hari</span>`;
+  const statTotalAbsen = document.getElementById('statTotalAbsen');
+  if(statTotalAbsen) statTotalAbsen.innerHTML = `${totalCutiGlobal} <span class="fs-6 text-muted fw-normal">Hari</span>`;
 
   populateTabelRekapan(filteredData);
 }

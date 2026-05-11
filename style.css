@@ -39,36 +39,115 @@
   }
   
   /* ==================== SIDEBAR STYLING ==================== */
-  .sidebar {
-    min-width: var(--sidebar-width);
-    max-width: var(--sidebar-width);
-    min-height: 100vh;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    position: fixed;
-    top: 0; left: 0;
-    z-index: 1040;
-    display: flex; flex-direction: column;
-  }
-  
-  .sidebar.active { margin-left: calc(var(--sidebar-width) * -1); } /* For Desktop toggle */
-  
-  .sidebar-menu { flex-grow: 1; }
-  
-  .sidebar-link {
-    color: #94a3b8; /* Slate 400 */
-    padding: 0.8rem 1.5rem;
-    border-radius: 8px;
-    margin: 0.2rem 1rem;
-    display: flex; align-items: center;
-    transition: all 0.2s;
-    font-weight: 500;
-    text-decoration: none;
-  }
-  
-  .sidebar-link .nav-icon { width: 25px; font-size: 1.1rem; margin-right: 10px; text-align: center; }
-  .sidebar-link:hover { color: #f8fafc; background-color: rgba(255,255,255,0.05); }
-  .sidebar-link.active { color: #ffffff; background-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
-  
+  /* Konfigurasi Dasar Sidebar */
+.sidebar {
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+  min-height: 100vh;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: fixed;
+  top: 0; 
+  left: 0;
+  z-index: 1040;
+  display: flex; 
+  flex-direction: column;
+  /* Perbaikan: Background putih dan border kanan */
+  background-color: #ffffff !important;
+  border-right: 1px solid #e2e8f0; 
+}
+
+/* For Desktop toggle */
+.sidebar.active { 
+  margin-left: calc(var(--sidebar-width) * -1); 
+}
+
+.sidebar-header {
+  border-bottom: 1px solid #f1f5f9; /* Border halus bawah logo */
+}
+
+.sidebar-menu { 
+  flex-grow: 1; 
+}
+
+/* Gaya Link Navigasi - Diperketat */
+.sidebar-link {
+  /* Mengurangi padding atas/bawah dari 0.8rem ke 0.5rem */
+  padding: 0.5rem 1.2rem; 
+  border-radius: 8px;
+  /* Mengurangi margin antar menu dari 0.2rem ke 0.1rem */
+  margin: 0.1rem 0.8rem; 
+  display: flex; 
+  align-items: center;
+  transition: all 0.2s;
+  font-weight: 500;
+  text-decoration: none;
+  color: #475569 !important; 
+  border: 1px solid transparent; 
+}
+
+/* Mengurangi jarak ikon agar tetap proporsional */
+.sidebar-link .nav-icon { 
+  width: 20px; /* Diperkecil sedikit */
+  font-size: 1rem; 
+  margin-right: 8px; 
+  text-align: center;
+  color: #64748b !important;
+}
+
+/* Kategori Menu (Menu Utama, dll) - Diperketat */
+.menu-category-text {
+  color: #94a3b8 !important;
+  font-size: 0.6rem; /* Diperkecil */
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0 1.2rem;
+  /* Mengurangi margin bawah dan atas pada kategori */
+  margin-bottom: 0.2rem; 
+  margin-top: 0.8rem; 
+}
+
+/* Menghilangkan margin atas ekstra pada elemen pertama agar menempel ke header */
+.sidebar-menu .nav:first-child .menu-category-text:first-child {
+  margin-top: 0.2rem;
+}
+
+/* Ikon Menu */
+.sidebar-link .nav-icon { 
+  width: 25px; 
+  font-size: 1.1rem; 
+  margin-right: 10px; 
+  text-align: center;
+  color: #64748b !important;
+}
+
+/* Efek Hover: Border & Warna Biru */
+.sidebar-link:hover { 
+  background-color: #f8fafc !important;
+  color: #0d6efd !important;
+  border: 1px solid #e2e8f0; 
+}
+
+.sidebar-link:hover .nav-icon {
+  color: #0d6efd !important;
+}
+
+/* Status Aktif */
+.sidebar-link.active { 
+  color: #ffffff !important; 
+  background-color: var(--primary) !important; 
+  box-shadow: 0 4px 12px -2px rgba(13, 110, 253, 0.4);
+  border: 1px solid var(--primary);
+}
+
+.sidebar-link.active .nav-icon {
+  color: #ffffff !important;
+}
+
+/* Footer Sidebar */
+.sidebar-footer {
+  border-top: 1px solid #f1f5f9;
+}
   /* ==================== MAIN CONTENT ==================== */
   /* Styling dasar untuk Nav Pill */
   #inputTab .nav-link {
